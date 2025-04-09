@@ -1,111 +1,61 @@
 const express = require('express');
-const router = express.Router();
-const shortid = require('shortid');
-const hljs = require('highlight.js');
+const bodyParser = require('body-parser');
+const path = require('path');
+const nunjucks = require('nunjucks');
+const routes = require('./routes/index');
 
-// In-memory database for pastes (replace with a real DB in production)
-const pastes = {};
+// Initialize express
+const app = express();
 
-// Home page
-router.get('/', (req, res) => {
-  res.render('home', { 
-    title: 'CodeShare',
-    host: req.protocol + '://' + req.get('host')
+// Configure nunjucks
+nunjucks.configure('views', {
+  autoescape: true,
+  express: app,
+  noCache: process.env.NODE_ENV === 'development'
+});
+
+// Middleware
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Add request timestamp for logging
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  next();
+});
+
+// Set template engine
+app.set('view engine', 'njk');
+
+// Error handler middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).render('error', {
+    message: 'Something went wrong!',
+    title: 'Server Error'
   });
 });
 
-// Create new paste
-router.post('/paste', (req, res) => {
-  const { code, language } = req.body;
-  
-  // Validate inputs
-  if (!code || code.trim() === '') {
-    return res.status(400).render('error', { 
-      message: 'Code content is required', 
-      title: 'Error'
-    });
-  }
-  
-  const id = shortid.generate();
-  
-  // Try to highlight the code
-  let highlighted;
-  try {
-    highlighted = language && language !== '' ? 
-      hljs.highlight(code, { language }).value : 
-      hljs.highlightAuto(code).value;
-  } catch (error) {
-    // Fallback to plain text if highlighting fails
-    highlighted = hljs.highlight(code, { language: 'plaintext' }).value;
-  }
-  
-  // Store the paste
-  pastes[id] = {
-    code,
-    language: language || 'plaintext',
-    created: new Date(),
-    highlighted
-  };
-  
-  res.redirect(`/paste/${id}`);
-});
+// Routes
+app.use('/', routes);
 
-// View paste
-router.get('/paste/:id', (req, res) => {
-  const id = req.params.id;
-  const paste = pastes[id];
-  
-  if (!paste) {
-    return res.status(404).render('error', { 
-      message: 'Paste not found', 
-      title: 'Not Found'
-    });
-  }
-  
-  res.render('view', { 
-    paste,
-    id,
-    title: `CodeShare - Paste ${id}`,
-    host: req.protocol + '://' + req.get('host')
+// 404 handler - must be after all other routes
+app.use((req, res) => {
+  res.status(404).render('error', { 
+    message: 'Page not found', 
+    title: 'Not Found'
   });
 });
 
-// Raw paste content
-router.get('/raw/:id', (req, res) => {
-  const id = req.params.id;
-  const paste = pastes[id];
-  
-  if (!paste) {
-    return res.status(404).send('Paste not found');
-  }
-  
-  res.set('Content-Type', 'text/plain');
-  res.send(paste.code);
-});
-
-// API endpoint to get paste data as JSON
-router.get('/api/paste/:id', (req, res) => {
-  const id = req.params.id;
-  const paste = pastes[id];
-  
-  if (!paste) {
-    return res.status(404).json({ error: 'Paste not found' });
-  }
-  
-  res.json({
-    id,
-    code: paste.code,
-    language: paste.language,
-    created: paste.created
+// Start server in local development only
+// In production (Vercel), we export the app
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`CodeShare is running on http://localhost:${PORT}`);
   });
-});
+}
 
-// Create error page route
-router.get('/error', (req, res) => {
-  res.render('error', { 
-    message: req.query.message || 'An error occurred', 
-    title: 'Error'
-  });
-});
-
-module.exports = router;
+// Export for serverless environment
+module.exports = app;
