@@ -1,0 +1,168 @@
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --bg-color: #f9f9f9;
+    --text-color: #333;
+    --border-color: #ddd;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+  }
+  
+  .container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  header h1 {
+    margin-bottom: 0.5rem;
+  }
+  
+  header h1 a {
+    color: white;
+    text-decoration: none;
+  }
+  
+  main {
+    padding: 2rem 0;
+    min-height: calc(100vh - 180px);
+  }
+  
+  footer {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+    margin-top: 2rem;
+  }
+  
+  .paste-form {
+    background: white;
+    border-radius: 5px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  textarea {
+    width: 100%;
+    min-height: 400px;
+    padding: 1rem;
+    font-family: 'Courier New', Courier, monospace;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    resize: vertical;
+  }
+  
+  select {
+    padding: 0.5rem;
+    width: 100%;
+    max-width: 300px;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+  }
+  
+  .btn {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 3px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+  }
+  
+  .btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .btn:hover {
+    opacity: 0.9;
+  }
+  
+  .paste-view {
+    background: white;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .paste-header {
+    padding: 1rem;
+    background-color: #f1f1f1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .paste-info span {
+    margin-right: 1rem;
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  .code-container {
+    padding: 1rem;
+    overflow-x: auto;
+  }
+  
+  pre {
+    margin: 0;
+  }
+  
+  code {
+    font-family: 'Courier New', Courier, monospace;
+  }
+  
+  .share-info {
+    margin-top: 1rem;
+    background: white;
+    padding: 1rem;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .share-info input {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+  }
+  
+  @media (max-width: 768px) {
+    .paste-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .paste-actions {
+      margin-top: 1rem;
+    }
+  }

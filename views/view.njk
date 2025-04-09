@@ -1,0 +1,26 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+  <div class="paste-view">
+    <div class="paste-header">
+      <div class="paste-info">
+        <span>Created: {{ paste.created.toLocaleString() }}</span>
+        {% if paste.language %}
+        <span>Language: {{ paste.language }}</span>
+        {% endif %}
+      </div>
+      <div class="paste-actions">
+        <a href="/raw/{{ id }}" class="btn btn-small">Raw</a>
+        <a href="/" class="btn btn-small">New Paste</a>
+      </div>
+    </div>
+    
+    <div class="code-container">
+      <pre><code>{{ paste.highlighted | safe }}</code></pre>
+    </div>
+  </div>
+  
+  <div class="share-info">
+    <p>Share this URL: <input type="text" readonly value="{{ host }}/paste/{{ id }}" onclick="this.select()"></p>
+  </div>
+{% endblock %}
