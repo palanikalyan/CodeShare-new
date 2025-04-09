@@ -28,6 +28,9 @@ app.use((req, res, next) => {
 // Set template engine
 app.set('view engine', 'njk');
 
+// Routes
+app.use('/', routes);
+
 // Error handler middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -37,9 +40,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Routes
-app.use('/', routes);
-
 // 404 handler - must be after all other routes
 app.use((req, res) => {
   res.status(404).render('error', { 
@@ -48,14 +48,11 @@ app.use((req, res) => {
   });
 });
 
-// Start server in local development only
-// In production (Vercel), we export the app
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => {
-    console.log(`CodeShare is running on http://localhost:${PORT}`);
-  });
-}
+// ✅ Start the server for Render or local
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`🚀 CodeShare is running on http://localhost:${PORT}`);
+});
 
-// Export for serverless environment
+// Optional export (for serverless/testing if needed)
 module.exports = app;
